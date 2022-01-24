@@ -19,26 +19,30 @@ import doobie.util.ExecutionContexts
 case object BookingClassNotFoundError
 case class BookingClass(id: Int, description: String, slots: Int)
 
-object BookingClassRepository {
+trait BookingClassRepositoryAlgebra:
+  def findById(id: Int): IO[Option[BookingClass]]
+  def findAll: IO[List[BookingClass]]
+  def create(bookingClass: BookingClass): IO[Int]
+  def update(bookingClass: BookingClass): IO[Int]
+  def delete(id: Int): IO[Int]
 
-  val xa: Transactor[IO] = Transactor.fromDriverManager[IO] (
-    "org.postgresql.Driver",
-    "jdbc:postgresql:postgres",
-    "postgres",
-    "postgres"
-  )
+object BookingClassRepository:
+  def apply(transactor: Transactor[IO]): BookingClassRepositoryAlgebra = new BookingClassRepository(transactor)
+
+class BookingClassRepository(transactor: Transactor[IO]) extends BookingClassRepositoryAlgebra:
+
 
   def findById(id: Int): IO[Option[BookingClass]] =
     sql"SELECT id, description, slots FROM public.booking_class WHERE id = $id"
       .query[BookingClass]
       .option
-      .transact(xa)
+      .transact(transactor)
 
   def findAll: IO[List[BookingClass]] =
     sql"SELECT id, description, slots FROM public.booking_class"
       .query[BookingClass]
       .to[List]
-      .transact(xa)
+      .transact(transactor)
 
   def create(bookingClass: BookingClass): IO[Int] =
     sql"""
@@ -47,7 +51,7 @@ object BookingClassRepository {
     """.stripMargin
       .update
       .run
-      .transact(xa)
+      .transact(transactor)
 
   def update(bookingClass: BookingClass): IO[Int] =
     sql"""
@@ -57,11 +61,10 @@ object BookingClassRepository {
     """.stripMargin
       .update
       .run
-      .transact(xa)
+      .transact(transactor)
 
   def delete(id: Int): IO[Int] =
     sql"DELETE FROM booking_class WHERE id = $id"
       .update
       .run
-      .transact(xa)
-}
+      .transact(transactor)

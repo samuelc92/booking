@@ -14,37 +14,37 @@ import io.circe.syntax.*
 
 object BookingRoutes:
 
-  val routes =
+  def routes(bookingClassRepository: BookingClassRepositoryAlgebra) =
     HttpRoutes.of[IO] {
       case GET -> Root / "health" =>
         NoContent()
       case GET -> Root / "booking" / "class" / IntVar(id) =>
-        BookingClassRepository
+        bookingClassRepository
           .findById(id)
           .flatMap {
             case Some(bookingClass) => Ok(bookingClass)
             case None => NotFound()
           }
       case GET -> Root / "booking" / "class" =>
-        BookingClassRepository
+        bookingClassRepository
           .findAll
           .flatMap(Ok(_))
       case req @ POST -> Root / "booking" / "class" =>
         for {
           bookingClass <- req.as[BookingClass]
-          resp <- BookingClassRepository
+          resp <- bookingClassRepository
             .create(bookingClass)
             .flatMap(Created(_))
         } yield (resp)
       case req @ PUT -> Root / "booking" / "class" =>
         for {
           bookingClass <- req.as[BookingClass]
-          resp <- BookingClassRepository
+          resp <- bookingClassRepository
             .update(bookingClass)
             .flatMap(_ => NoContent())
         } yield (resp)
       case DELETE -> Root / "booking" / "class" / IntVar(id) =>
-        BookingClassRepository
+        bookingClassRepository
           .delete(id)
           .flatMap(_ => NoContent())
     }.orNotFound
