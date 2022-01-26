@@ -17,7 +17,7 @@ object Main extends IOApp:
   def run(args: List[String]): IO[ExitCode] =
     BlazeServerBuilder[IO]
       .bindHttp(8080, "localhost")
-      .withHttpApp(BookingRoutes.routes(BookingClassRepository(xa)))
+      .withHttpApp(BookingRoutes.allRoutes(xa))
       .serve
       .compile
       .drain

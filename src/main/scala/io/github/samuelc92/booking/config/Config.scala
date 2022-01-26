@@ -1,14 +1,25 @@
 package io.github.samuelc92.booking.config
 
+/*
 import cats.effect.IO
-import io.circe.generic.auto.*
+import com.typesafe.config.ConfigFactory
 
-case class ServerConfig(port: Int, host: String)
-
-case class DbConfig(url: String, username: String, password: String)
-
-case class Config(serverConfig: ServerConfig, dbConfig: DbConfig)
-object Config {
-
-  def load: Config = Config(ServerConfig(9000, "0.0.0.0"), DbConfig("", "postgres", "postgres"))
+sealed trait Config {
+  protected val config = ConfigFactory.load()
+  protected val applicationConfig = config.getConfig("application")
 }
+
+object ServerConfig extends Config {
+  val serverConfig = this
+  private val server = config.getConfig("server")
+  val host = server.getString("host")
+  val port = server.getInt("port")
+}
+
+object DbConfig extends Config {
+  val dbConfig = this
+  private val db = config.getConfig("db")
+  val username = db.getString("username")
+  val password = db.getString("password")
+}// (url: String, username: String, password: String)
+*/

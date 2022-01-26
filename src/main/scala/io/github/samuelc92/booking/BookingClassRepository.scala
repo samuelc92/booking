@@ -31,7 +31,6 @@ object BookingClassRepository:
 
 class BookingClassRepository(transactor: Transactor[IO]) extends BookingClassRepositoryAlgebra:
 
-
   def findById(id: Int): IO[Option[BookingClass]] =
     sql"SELECT id, description, slots FROM public.booking_class WHERE id = $id"
       .query[BookingClass]
