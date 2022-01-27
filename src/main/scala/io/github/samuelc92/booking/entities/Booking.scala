@@ -13,7 +13,7 @@ case class Booking(id: Int, attendanceId: UUID, employeeId: UUID, startAt: Offse
                    , status: BookingStatus)
 
 object Booking:
-  implicit val decodeBooking: Decoder[Booking] = new Decoder[Booking] {
+  given decodeBooking: Decoder[Booking] = new Decoder[Booking] {
     override def apply(c: HCursor): Result[Booking] =
       for {
         id <- c.downField("id").as[Int]
