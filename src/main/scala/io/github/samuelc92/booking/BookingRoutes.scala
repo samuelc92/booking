@@ -12,6 +12,9 @@ import org.http4s.circe.CirceEntityEncoder.*
 import org.http4s.circe.CirceEntityDecoder.*
 import io.circe.generic.auto.*
 import io.circe.syntax.*
+import io.github.samuelc92.booking.usecases.*
+import io.github.samuelc92.booking.entities.*
+import io.github.samuelc92.booking.entities.Booking.*
 
 object BookingRoutes:
 
@@ -30,9 +33,9 @@ object BookingRoutes:
           .flatMap(Ok(_))
       case req @ POST -> Root / "booking" =>
         for {
-          bookingClass <- req.as[BookingMapped]
-          resp <- bookingRepository
-            .create(bookingClass)
+          booking <- req.as[Booking]
+          resp <- CreateBookingUseCase(bookingRepository)
+            .execute(booking)
             .flatMap(Created(_))
         } yield (resp)
       case DELETE -> Root / "booking" / IntVar(id) =>

@@ -17,8 +17,6 @@ import doobie.implicits.javasql.*
 import java.util.{UUID}
 
 case object BookingNotFoundError
-enum BookingStatus:
-  case PENDENT, CONFIRMED, CANCELED
 case class BookingMapped(id: Int, attendanceId: UUID, employeeId: UUID, startAt: OffsetDateTime, endAt: OffsetDateTime, status: Int)
 
 trait BookingRepositoryAlgebra:
