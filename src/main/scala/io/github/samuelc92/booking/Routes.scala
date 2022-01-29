@@ -15,6 +15,6 @@ object Routes {
   val healthRoutes =
     HttpRoutes.of[IO] {
       case GET -> Root / "health" =>
-        NoContent()
+        Ok("ping")
     }
 }

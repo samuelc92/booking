@@ -36,7 +36,12 @@ object BookingRoutes:
           booking <- req.as[Booking]
           resp <- CreateBookingUseCase(bookingRepository)
             .execute(booking)
-            .flatMap(Created(_))
+            .flatMap { b =>
+              b match {
+                case Left(error) => BadRequest(error)
+                case Right(value) => Created(value)
+              }
+            }
         } yield (resp)
       case DELETE -> Root / "booking" / IntVar(id) =>
         bookingRepository
