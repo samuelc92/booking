@@ -15,20 +15,25 @@ object CreateBookingUseCase:
 
 class CreateBookingUseCase(repository: BookingRepositoryAlgebra):
   def execute(request: Booking): IO[Either[NoSlotError, Int]] =
-    val bookings = for {
+    for {
       bookings <- repository.findByEmployeeIdAndDay(request.employeeId, request.startAt)
-      booking <- IO.pure[List[BookingMapped]](bookings.filter(b => request.startAt >= b.startAt && request.startAt <= b.endAt))
-    } yield booking
-    bookings.flatMap { b =>
-      b match {
-        case head :: tail => IO(Left(NoSlotError("There is no slot available")))
-        case Nil =>
-          val mapped = BookingMapped(request.id, request.attendanceId, request.employeeId, request.startAt, request.endAt, request.status.ordinal)
-          for {
-            result <- repository.create(mapped)
-          } yield Right(result)
-      }
+      bookingOption <- IO.pure[Option[BookingMapped]](filterBookingThatIsSamePeriod(bookings, request))
+      result <- createBooking(bookingOption, request)
+    } yield result
+
+  private def createBooking(bookingOption: Option[BookingMapped], request: Booking): IO[Either[NoSlotError, Int]] =
+    bookingOption match {
+      case Some(_) => IO.pure(Left(NoSlotError("There is no slot available")))
+      case None =>
+        val mapped = BookingMapped(request.id, request.attendanceId, request.employeeId, request.startAt, request.endAt, request.status.ordinal)
+        for {
+          booking <- repository.create(mapped)
+        } yield Right(booking)
     }
+
+  private def filterBookingThatIsSamePeriod(bookings: List[BookingMapped], request: Booking): Option[BookingMapped] =
+    bookings
+      .find(b => request.startAt >= b.startAt && request.startAt <= b.endAt)
 
 extension (d: OffsetDateTime) {
   def >=(d2: OffsetDateTime): Boolean =
