@@ -9,7 +9,9 @@ object Routes {
 
   def routes(xa: Transactor[IO]) =
     import cats.syntax.semigroupk.*
-    val completeRoutes = BookingRoutes.routes(BookingRepository(xa)) <+> healthRoutes
+    val completeRoutes = BookingRoutes.routes(BookingRepository(xa)) <+>
+      SchedulerRoutes.routes(BookingRepository(xa)) <+>
+      healthRoutes
     completeRoutes.orNotFound
 
   val healthRoutes =
