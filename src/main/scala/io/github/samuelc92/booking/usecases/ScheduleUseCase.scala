@@ -4,6 +4,7 @@ import java.util.UUID
 import java.time.{LocalDate, OffsetDateTime, OffsetTime, ZoneOffset}
 import io.github.samuelc92.booking.*
 import cats.effect.IO
+import io.github.samuelc92.booking.repositories.{BookingMapped, BookingRepositoryAlgebra}
 
 import scala.annotation.tailrec
 

@@ -1,20 +1,18 @@
-package io.github.samuelc92.booking
+package io.github.samuelc92.booking.repositories
 
 import cats.effect.IO
 import cats.implicits.*
 import doobie.*
 import doobie.implicits.*
-
-import java.time.OffsetDateTime
-
 // Very important to deal with arrays
-import doobie.postgres._
-import doobie.postgres.implicits._
-import doobie.util.transactor.Transactor._
-import doobie.util.ExecutionContexts
 import doobie.implicits.javasql.*
+import doobie.postgres.*
+import doobie.postgres.implicits.*
+import doobie.util.ExecutionContexts
+import doobie.util.transactor.Transactor.*
 
-import java.util.{UUID}
+import java.util.UUID
+import java.time.OffsetDateTime
 
 case object BookingNotFoundError
 case class BookingMapped(id: Int, attendanceId: UUID, employeeId: UUID, startAt: OffsetDateTime, endAt: OffsetDateTime, status: Int)

@@ -11,6 +11,7 @@ import org.http4s.circe.CirceEntityEncoder.*
 import org.http4s.circe.CirceEntityDecoder.*
 import io.circe.generic.auto.*
 import io.circe.syntax.*
+import io.github.samuelc92.booking.repositories.BookingRepositoryAlgebra
 import io.github.samuelc92.booking.usecases.ScheduleUseCase
 
 import java.time.LocalDate

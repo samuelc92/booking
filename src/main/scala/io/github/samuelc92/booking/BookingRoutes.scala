@@ -15,6 +15,7 @@ import io.circe.syntax.*
 import io.github.samuelc92.booking.usecases.*
 import io.github.samuelc92.booking.entities.*
 import io.github.samuelc92.booking.entities.Booking.given
+import io.github.samuelc92.booking.repositories.BookingRepositoryAlgebra
 
 object BookingRoutes:
 

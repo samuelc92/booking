@@ -2,6 +2,7 @@ package io.github.samuelc92.booking
 
 import cats.effect.IO
 import doobie.Transactor
+import io.github.samuelc92.booking.repositories.BookingRepository
 import org.http4s.HttpRoutes
 import org.http4s.dsl.io.*
 
