@@ -18,6 +18,7 @@ case class Employee(id: UUID, name: String)
 trait EmployeeRepositoryAlgebra:
   def findById(id: UUID): IO[Option[Employee]]
   def findAll: IO[List[Employee]]
+  def create(employee: Employee): IO[Int]
 
 object EmployeeRepository:
   def apply(transactor: Transactor[IO]): EmployeeRepositoryAlgebra =
