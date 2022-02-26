@@ -11,12 +11,10 @@ import doobie.postgres.*
 import doobie.postgres.implicits.*
 import doobie.util.ExecutionContexts
 
-import java.util.UUID
-
-case class Employee(id: UUID, name: String)
+case class Employee(id: Int, fullName: String)
 
 trait EmployeeRepositoryAlgebra:
-  def findById(id: UUID): IO[Option[Employee]]
+  def findById(id: Int): IO[Option[Employee]]
   def findAll: IO[List[Employee]]
   def create(employee: Employee): IO[Int]
 
@@ -26,7 +24,7 @@ object EmployeeRepository:
 
 class EmployeeRepository(transactor: Transactor[IO]) extends EmployeeRepositoryAlgebra:
 
-  def findById(id: UUID): IO[Option[Employee]] =
+  def findById(id: Int): IO[Option[Employee]] =
     sql"SELECT * FROM employee WHERE id = $id"
       .query[Employee]
       .option
@@ -39,13 +37,16 @@ class EmployeeRepository(transactor: Transactor[IO]) extends EmployeeRepositoryA
       .transact(transactor)
 
   def create(employee: Employee): IO[Int] =
+    createReturningId(employee)
+      .transact(transactor)
+
+  private def createReturningId(employee: Employee): ConnectionIO[Int] =
     sql"""
-         |INSERT INTO employee(id, name)
-         |VALUES (${employee.id}, ${employee.name})
+         |INSERT INTO employee(fullName)
+         |VALUES (${employee.fullName})
     """.stripMargin
       .update
-      .run
-      .transact(transactor)
+      .withUniqueGeneratedKeys[Int]("id")
 
   def delete(id: Int): IO[Int] =
     sql"DELETE FROM employee WHERE id = $id"
