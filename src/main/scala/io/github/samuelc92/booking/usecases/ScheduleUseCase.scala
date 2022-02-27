@@ -1,6 +1,5 @@
 package io.github.samuelc92.booking.usecases
 
-import java.util.UUID
 import java.time.{LocalDate, OffsetDateTime, OffsetTime, ZoneOffset}
 import io.github.samuelc92.booking.*
 import cats.effect.IO
@@ -8,7 +7,7 @@ import io.github.samuelc92.booking.repositories.{BookingMapped, BookingRepositor
 
 import scala.annotation.tailrec
 
-case class ScheduleResponse(employeeId: UUID, date: LocalDate, times: List[ScheduleTimes])
+case class ScheduleResponse(employeeId: Int, date: LocalDate, times: List[ScheduleTimes])
 case class ScheduleTimes(time: OffsetTime, available: Boolean)
 
 object ScheduleUseCase:
@@ -16,7 +15,7 @@ object ScheduleUseCase:
 
 class ScheduleUseCase(repository: BookingRepositoryAlgebra):
 
-  def getScheduler(employeeId: UUID, date: LocalDate) =
+  def getScheduler(employeeId: Int, date: LocalDate) =
     val employeeScheduler = buildEmployeeScheduler
     val employeeBookings = repository.findByEmployeeIdAndDay(employeeId,
       date.atTime(OffsetTime.of(0, 0, 0, 0, ZoneOffset.UTC)))

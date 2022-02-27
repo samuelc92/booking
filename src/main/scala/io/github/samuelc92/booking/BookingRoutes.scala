@@ -3,7 +3,6 @@ package io.github.samuelc92.booking
 import cats.effect.Sync
 import cats.implicits.*
 import cats.effect.*
-import doobie.Transactor
 import org.http4s.HttpRoutes
 import org.http4s.dsl.Http4sDsl
 import org.http4s.dsl.io.*

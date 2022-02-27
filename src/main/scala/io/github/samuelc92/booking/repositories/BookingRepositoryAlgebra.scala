@@ -15,12 +15,12 @@ import java.util.UUID
 import java.time.OffsetDateTime
 
 case object BookingNotFoundError
-case class BookingMapped(id: Int, attendanceId: UUID, employeeId: UUID, startAt: OffsetDateTime, endAt: OffsetDateTime, status: Int)
+case class BookingMapped(id: Int, attendanceId: UUID, employeeId: Int, startAt: OffsetDateTime, endAt: OffsetDateTime, status: Int)
 
 trait BookingRepositoryAlgebra:
   def findById(id: Int): IO[Option[BookingMapped]]
   def findAll: IO[List[BookingMapped]]
-  def findByEmployeeIdAndDay(employeeId: UUID, startAt: OffsetDateTime): IO[List[BookingMapped]]
+  def findByEmployeeIdAndDay(employeeId: Int, startAt: OffsetDateTime): IO[List[BookingMapped]]
   def create(booking: BookingMapped): IO[Int]
   def delete(id: Int): IO[Int]
 
@@ -57,7 +57,7 @@ class BookingRepository(transactor: Transactor[IO]) extends BookingRepositoryAlg
       .run
       .transact(transactor)
 
-  def findByEmployeeIdAndDay(employeeId: UUID, startAt: OffsetDateTime): IO[List[BookingMapped]] =
+  def findByEmployeeIdAndDay(employeeId: Int, startAt: OffsetDateTime): IO[List[BookingMapped]] =
     sql"""
          |SELECT * FROM booking WHERE employeeid = $employeeId
          |AND date_trunc('day', startat) = date_trunc('day', $startAt)

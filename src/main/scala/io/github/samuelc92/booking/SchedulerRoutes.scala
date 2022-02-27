@@ -26,7 +26,7 @@ object SchedulerRoutes:
 
   def routes(bookingRepository: BookingRepositoryAlgebra) =
     HttpRoutes.of[IO] {
-      case GET -> Root / "scheduler" / UUIDVar(employeeId) :? IsoLocalDateParamMatcher(date) =>
+      case GET -> Root / "scheduler" / IntVar(employeeId) :? IsoLocalDateParamMatcher(date) =>
         ScheduleUseCase(bookingRepository)
           .getScheduler(employeeId, date)
           .flatMap(Ok(_))

@@ -9,7 +9,7 @@ import java.util.UUID
 enum BookingStatus:
   case PENDENT, CONFIRMED, CANCELED
 
-case class Booking(id: Int, attendanceId: UUID, employeeId: UUID, startAt: OffsetDateTime, endAt: OffsetDateTime
+case class Booking(id: Int, attendanceId: UUID, employeeId: Int, startAt: OffsetDateTime, endAt: OffsetDateTime
                    , status: BookingStatus)
 
 object Booking:
@@ -18,7 +18,7 @@ object Booking:
       for {
         id <- c.downField("id").as[Int]
         attendanceId <- c.downField("attendanceId").as[UUID]
-        employeeId <- c.downField("employeeId").as[UUID]
+        employeeId <- c.downField("employeeId").as[Int]
         startAt <- c.downField("startAt").as[OffsetDateTime]
         endAt <- c.downField("endAt").as[OffsetDateTime]
         status <- c.downField("status").as[String]
