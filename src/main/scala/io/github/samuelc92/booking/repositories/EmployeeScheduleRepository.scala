@@ -17,6 +17,7 @@ case class EmployeeSchedule(employeeId: Int, day: String, startTime1: String, en
 
 trait EmployeeScheduleRepositoryAlgebra:
   def findByEmployeeId(employeeId: Int): IO[List[EmployeeSchedule]]
+  def findByEmployeeIdAndDay(employeeId: Int, day: String): IO[Option[EmployeeSchedule]]
   def create(employeeSchedule: Seq[EmployeeSchedule]): IO[Int]
 
 object EmployeeScheduleRepository:
@@ -28,6 +29,12 @@ class EmployeeScheduleRepository(transactor: Transactor[IO]) extends EmployeeSch
     sql"SELECT * FROM employee_schedule WHERE employeeId = $employeeId"
       .query[EmployeeSchedule]
       .to[List]
+      .transact(transactor)
+
+  def findByEmployeeIdAndDay(employeeId: Int, day: String): IO[Option[EmployeeSchedule]] =
+    sql"SELECT employeeId, day, startTime1, endTime1, startTime2, endTime2 FROM employee_schedule WHERE employeeId = $employeeId AND day = $day"
+      .query[EmployeeSchedule]
+      .option
       .transact(transactor)
 
   def create(employeeSchedule: Seq[EmployeeSchedule]): IO[Int] =

@@ -11,7 +11,7 @@ import org.http4s.circe.CirceEntityEncoder.*
 import org.http4s.circe.CirceEntityDecoder.*
 import io.circe.generic.auto.*
 import io.circe.syntax.*
-import io.github.samuelc92.booking.repositories.BookingRepositoryAlgebra
+import io.github.samuelc92.booking.repositories.{BookingRepositoryAlgebra, EmployeeScheduleRepositoryAlgebra}
 import io.github.samuelc92.booking.usecases.ScheduleUseCase
 
 import java.time.LocalDate
@@ -24,10 +24,10 @@ object SchedulerRoutes:
 
   object IsoLocalDateParamMatcher extends QueryParamDecoderMatcher[LocalDate]("date")
 
-  def routes(bookingRepository: BookingRepositoryAlgebra) =
+  def routes(bookingRepository: BookingRepositoryAlgebra, employeeScheduleRepository: EmployeeScheduleRepositoryAlgebra) =
     HttpRoutes.of[IO] {
-      case GET -> Root / "scheduler" / IntVar(employeeId) :? IsoLocalDateParamMatcher(date) =>
-        ScheduleUseCase(bookingRepository)
+      case GET -> Root / "schedulers" / IntVar(employeeId) :? IsoLocalDateParamMatcher(date) =>
+        ScheduleUseCase(bookingRepository, employeeScheduleRepository)
           .getScheduler(employeeId, date)
           .flatMap(Ok(_))
     }
