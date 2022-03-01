@@ -1,5 +1,5 @@
 val Http4sVersion = "0.23.7"
-val MunitVersion = "0.7.29"
+val MunitVersion = "1.0.0-M1"
 val LogbackVersion = "1.2.6"
 val MunitCatsEffectVersion = "1.0.6"
 val DoobieVersion = "1.0.0-RC1"
