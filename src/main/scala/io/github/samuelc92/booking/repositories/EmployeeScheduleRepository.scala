@@ -18,7 +18,7 @@ case class EmployeeSchedule(employeeId: Int, day: String, startTime1: String, en
 trait EmployeeScheduleRepositoryAlgebra:
   def findByEmployeeId(employeeId: Int): IO[List[EmployeeSchedule]]
   def findByEmployeeIdAndDay(employeeId: Int, day: String): IO[Option[EmployeeSchedule]]
-  def create(employeeSchedule: Seq[EmployeeSchedule]): IO[Int]
+  def create(employeeSchedule: Seq[EmployeeSchedule]): IO[Either[Throwable, Int]]
 
 object EmployeeScheduleRepository:
   def apply(transactor: Transactor[IO]): EmployeeScheduleRepositoryAlgebra = new EmployeeScheduleRepository(transactor)
@@ -37,6 +37,9 @@ class EmployeeScheduleRepository(transactor: Transactor[IO]) extends EmployeeSch
       .option
       .transact(transactor)
 
-  def create(employeeSchedule: Seq[EmployeeSchedule]): IO[Int] =
+  def create(employeeSchedule: Seq[EmployeeSchedule]): IO[Either[Throwable, Int]] =
     val sql = "INSERT INTO employee_schedule(employeeId, day, startTime1, endTime1, startTime2, endTime2) VALUES (?, ?, ?, ?, ?, ?)"
-    Update[EmployeeSchedule](sql).updateMany(employeeSchedule).transact(transactor)
+    Update[EmployeeSchedule](sql)
+      .updateMany(employeeSchedule)
+      .transact(transactor)
+      .attempt

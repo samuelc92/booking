@@ -6,8 +6,8 @@ import io.github.samuelc92.booking.repositories.{Employee, EmployeeRepositoryAlg
 import java.util.UUID
 import scala.annotation.tailrec
 
-case class CreateEmployeeRequest(fullName: String, scheduler: Seq[CreateEmployeeScheduleRequest])
-case class CreateEmployeeScheduleRequest(day: String, startTime1: String, endTime1: String, startTime2: String, endTime2: String)
+final case class CreateEmployeeRequest(fullName: String, scheduler: Seq[CreateEmployeeScheduleRequest])
+final case class CreateEmployeeScheduleRequest(day: String, startTime1: String, endTime1: String, startTime2: String, endTime2: String)
 
 object CreateEmployeeUseCase:
   def apply(employeeRepository: EmployeeRepositoryAlgebra,
@@ -19,11 +19,11 @@ class CreateEmployeeUseCase(employeeRepository: EmployeeRepositoryAlgebra,
 
   def execute(createEmployeeRequest: CreateEmployeeRequest): IO[Either[Throwable, Int]] =
     for {
-      employeeId <- employeeRepository.create(Employee(0, createEmployeeRequest.fullName))
-      _ <- createEmployeeSchedule(employeeId)(createEmployeeRequest.scheduler)
-    } yield Right(employeeId)
+      employeeEither <- employeeRepository.create(Employee(0, createEmployeeRequest.fullName))
+      result <- createEmployeeSchedule(employeeEither.getOrElse(0))(createEmployeeRequest.scheduler)
+    } yield result
 
-  private def createEmployeeSchedule(employeeId: Int)(scheduler: Seq[CreateEmployeeScheduleRequest]): IO[Int] =
+  private def createEmployeeSchedule(employeeId: Int)(scheduler: Seq[CreateEmployeeScheduleRequest]): IO[Either[Throwable, Int]] =
     employeeScheduleRepository create scheduler.map(mapToEmployeeSchedule(employeeId))
 
   private def mapToEmployeeSchedule(employeeId: Int)(employeeScheduleRequest: CreateEmployeeScheduleRequest) =

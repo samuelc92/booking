@@ -16,7 +16,7 @@ case class Employee(id: Int, fullName: String)
 trait EmployeeRepositoryAlgebra:
   def findById(id: Int): IO[Option[Employee]]
   def findAll: IO[List[Employee]]
-  def create(employee: Employee): IO[Int]
+  def create(employee: Employee): IO[Either[Throwable, Int]]
 
 object EmployeeRepository:
   def apply(transactor: Transactor[IO]): EmployeeRepositoryAlgebra =
@@ -36,9 +36,10 @@ class EmployeeRepository(transactor: Transactor[IO]) extends EmployeeRepositoryA
       .to[List]
       .transact(transactor)
 
-  def create(employee: Employee): IO[Int] =
+  def create(employee: Employee): IO[Either[Throwable, Int]] =
     createReturningId(employee)
       .transact(transactor)
+      .attempt
 
   private def createReturningId(employee: Employee): ConnectionIO[Int] =
     sql"""
