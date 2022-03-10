@@ -58,11 +58,13 @@ class CreateEmployeeUseCase(employeeRepository: EmployeeRepositoryAlgebra,
       }
 
   private def isTimeValid(time: String): Either[Throwable, Boolean] =
-    time.split(":")(0).toIntOption match {
-      case Some(_) =>
-        time.split(":")(1).toIntOption match {
-          case Some(_) => Right(true)
-          case None => Left(IllegalArgumentException("Invalid value"))
-        }
-      case None => Left(IllegalArgumentException("Invalid value"))
-    }
+    if (time.split(":").length <= 1) Left(IllegalArgumentException("Invalid value"))
+    else
+      time.split(":")(0).toIntOption match {
+        case Some(_) =>
+          time.split(":")(1).toIntOption match {
+            case Some(_) => Right(true)
+            case None => Left(IllegalArgumentException("Invalid value"))
+          }
+        case None => Left(IllegalArgumentException("Invalid value"))
+      }
