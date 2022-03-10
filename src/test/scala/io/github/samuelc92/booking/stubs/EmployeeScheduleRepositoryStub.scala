@@ -10,7 +10,7 @@ class EmployeeScheduleRepositoryStub extends EmployeeScheduleRepositoryAlgebra:
   override def findByEmployeeIdAndDay(employeeId: Int, day: String): IO[Option[EmployeeSchedule]] =
     IO.pure(employeeSchedules.find(e => e.employeeId == employeeId && e.day == day))
 
-  override def create(employeeSchedule: Seq[EmployeeSchedule]): IO[Int] = ???
+  override def create(employeeSchedule: Seq[EmployeeSchedule]): IO[Either[Throwable, Int]] = IO.pure(Right(1))
 
 object EmployeeScheduleRepositoryStub:
   def apply(): EmployeeScheduleRepositoryAlgebra = new EmployeeScheduleRepositoryStub()
