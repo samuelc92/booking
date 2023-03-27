@@ -1,3 +1,8 @@
 target
 /.idea
 /.bsp
+.metals
+.vscode
+bookingapp.mv.db
+bookingapp.trace.db
+*.bloop

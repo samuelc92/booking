@@ -1,16 +1,7 @@
 package io.github.samuelc92.booking
 
-import cats.effect.Sync
-import cats.implicits.*
-import cats.effect.*
-import doobie.Transactor
-import org.http4s.{EntityEncoder, HttpRoutes, QueryParamCodec, QueryParamDecoder}
-import org.http4s.dsl.Http4sDsl
-import org.http4s.dsl.io.*
-import org.http4s.circe.CirceEntityEncoder.*
-import org.http4s.circe.CirceEntityDecoder.*
-import io.circe.generic.auto.*
-import io.circe.syntax.*
+import zhttp.http._
+import zio._
 import io.github.samuelc92.booking.repositories.{BookingRepositoryAlgebra, EmployeeScheduleRepositoryAlgebra}
 import io.github.samuelc92.booking.usecases.ScheduleUseCase
 
@@ -19,15 +10,8 @@ import java.time.format.DateTimeFormatter
 
 object SchedulerRoutes:
 
-  implicit val isoLocalDateCodec: QueryParamCodec[LocalDate] =
-    QueryParamCodec.localDate(DateTimeFormatter.ISO_LOCAL_DATE)
-
-  object IsoLocalDateParamMatcher extends QueryParamDecoderMatcher[LocalDate]("date")
-
-  def routes(bookingRepository: BookingRepositoryAlgebra, employeeScheduleRepository: EmployeeScheduleRepositoryAlgebra) =
-    HttpRoutes.of[IO] {
-      case GET -> Root / "schedulers" / IntVar(employeeId) :? IsoLocalDateParamMatcher(date) =>
-        ScheduleUseCase(bookingRepository, employeeScheduleRepository)
-          .getScheduler(employeeId, date)
-          .flatMap(Ok(_))
+  def routes: Http[Any, Nothing, Request, Response] =
+    Http.collect[Request] {
+      case Method.GET -> !! / "schedulers" =>
+        Response.json("""{"greetings": "Hello World!"}""")
     }

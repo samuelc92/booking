@@ -1,24 +1,19 @@
 package io.github.samuelc92.booking
 
-import cats.effect.{ExitCode, IO, IOApp}
 import doobie.Transactor
-import org.http4s.blaze.server.*
-import org.http4s.implicits.*
+import zhttp.http._
+import zhttp.service.Server
+import zio._
+import io.github.samuelc92.booking.routes.EmployeeRoutes
+import io.github.samuelc92.booking.repositories.EmployeeRepository
 
-object Main extends IOApp:
 
-  val xa: Transactor[IO] = Transactor.fromDriverManager[IO] (
-    "org.postgresql.Driver",
-    "jdbc:postgresql:postgres",
-    "postgres",
-    "postgres"
-  )
+object Main extends ZIOAppDefault:
 
-  def run(args: List[String]): IO[ExitCode] =
-    BlazeServerBuilder[IO]
-      .bindHttp(8080, "localhost")
-      .withHttpApp(Routes.routes(xa))
-      .serve
-      .compile
-      .drain
-      .as(ExitCode.Success)
+  def run =
+    Server.start(
+      port = 8080,
+        http = Routes.wrappedRoutes
+    ).provide(
+      EmployeeRepository.layer
+    )

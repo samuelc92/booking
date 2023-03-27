@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS EmployeeTable(
+	"id" uuid NOT NULL PRIMARY KEY,
+	"name" VARCHAR(255)
+);

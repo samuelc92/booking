@@ -1,7 +1,7 @@
 package io.github.samuelc92.booking.usecases
 
 import cats.effect.IO
-import io.github.samuelc92.booking.repositories.{Employee, EmployeeRepositoryAlgebra, EmployeeSchedule, EmployeeScheduleRepositoryAlgebra}
+import io.github.samuelc92.booking.repositories.{EmployeeRepositoryAlgebra, EmployeeSchedule, EmployeeScheduleRepositoryAlgebra}
 import io.github.samuelc92.booking.valueobjects.Period
 
 import java.util.UUID
@@ -10,6 +10,7 @@ import scala.annotation.tailrec
 final case class CreateEmployeeRequest(fullName: String, scheduler: Seq[CreateEmployeeScheduleRequest])
 final case class CreateEmployeeScheduleRequest(day: String, startTime1: String, endTime1: String, startTime2: String, endTime2: String)
 
+/*
 object CreateEmployeeUseCase:
   def apply(employeeRepository: EmployeeRepositoryAlgebra,
             employeeScheduleRepository: EmployeeScheduleRepositoryAlgebra): CreateEmployeeUseCase =
@@ -68,3 +69,4 @@ class CreateEmployeeUseCase(employeeRepository: EmployeeRepositoryAlgebra,
           }
         case None => Left(IllegalArgumentException("Invalid value"))
       }
+      */
