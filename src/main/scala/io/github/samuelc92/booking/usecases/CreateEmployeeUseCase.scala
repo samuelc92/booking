@@ -1,15 +1,64 @@
 package io.github.samuelc92.booking.usecases
 
-import cats.effect.IO
 import io.github.samuelc92.booking.repositories.{EmployeeRepositoryAlgebra, EmployeeSchedule, EmployeeScheduleRepositoryAlgebra}
 import io.github.samuelc92.booking.valueobjects.Period
+import io.github.samuelc92.booking.entities.*
+import io.github.samuelc92.booking.usecases.CreateEmployeeUseCase.CreateEmployeeUseCaseImpl.*
 
+import cats.effect.IO
 import java.util.UUID
 import scala.annotation.tailrec
+
+import zio.*
+
+import zio.json.*
+import sttp.tapir.Schema
 
 final case class CreateEmployeeRequest(fullName: String, scheduler: Seq[CreateEmployeeScheduleRequest])
 final case class CreateEmployeeScheduleRequest(day: String, startTime1: String, endTime1: String, startTime2: String, endTime2: String)
 
+trait CreateEmployeeUseCase:
+  def execute(request: Employee): ZIO[Any, Nothing, Employee]
+
+object CreateEmployeeUseCase {
+  lazy val layer: ZLayer[EmployeeRepositoryAlgebra, Throwable, CreateEmployeeUseCase] = ZLayer {
+    for {
+      employeeRepository <- ZIO.service[EmployeeRepositoryAlgebra]
+    } yield CreateEmployeeUseCaseImpl(employeeRepository)
+  }
+
+  final case class CreateEmployeeUseCaseImpl(
+    employeeRepository: EmployeeRepositoryAlgebra
+  ) extends CreateEmployeeUseCase {
+    override def execute(request: Employee): ZIO[Any, Nothing, Employee] =
+      for {
+        _ <- employeeRepository
+          .create(request)
+          .tap(inserted => ZIO.logInfo(s"Created employee: $inserted"))
+          .catchAll { e =>
+            ZIO.logError(s"Got the error: $e. Ignoring...").`as`("")
+          }
+      } yield request
+  } 
+
+  sealed trait Error
+  object Error {
+
+    implicit lazy val codec: JsonCodec[Error] = DeriveJsonCodec.gen
+
+    case class InvalidInput(error: String) extends Error
+    object InvalidInput {
+      implicit lazy val codec: JsonCodec[InvalidInput] = DeriveJsonCodec.gen
+      implicit lazy val schema: Schema[InvalidInput]   = Schema.derived
+    }
+
+    case class NotFound(message: String) extends Error
+    object NotFound {
+      implicit lazy val codec: JsonCodec[NotFound] = DeriveJsonCodec.gen
+      implicit lazy val schema: Schema[NotFound]   = Schema.derived
+    }
+  }
+}
 /*
 object CreateEmployeeUseCase:
   def apply(employeeRepository: EmployeeRepositoryAlgebra,

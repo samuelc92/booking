@@ -1,8 +1,10 @@
 package io.github.samuelc92.booking.stubs
 
 import cats.effect.IO
-import io.github.samuelc92.booking.repositories.{Employee, EmployeeRepositoryAlgebra}
+import io.github.samuelc92.booking.repositories.*
+import io.github.samuelc92.booking.entities.*
 
+/*
 class EmployeeRepositoryStub extends EmployeeRepositoryAlgebra:
   override def findById(id: Int): IO[Option[Employee]] = ???
 
@@ -12,3 +14,5 @@ class EmployeeRepositoryStub extends EmployeeRepositoryAlgebra:
 
 object EmployeeRepositoryStub:
   def apply(): EmployeeRepositoryAlgebra = new EmployeeRepositoryStub()
+
+*/

@@ -9,7 +9,7 @@ import io.github.samuelc92.booking.routes.EmployeeRoutes
 object Routes:
 
   def routes =
-    BookingRoutes.routes ++ SchedulerRoutes.routes ++ EmployeeRoutes() ++ healthRoutes
+    BookingRoutes.routes ++ SchedulerRoutes.routes ++ healthRoutes
 
   def wrappedRoutes =
     routes @@ Middleware.debug
