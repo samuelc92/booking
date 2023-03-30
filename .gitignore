@@ -6,3 +6,5 @@ target
 bookingapp.mv.db
 bookingapp.trace.db
 *.bloop
+project/target
+project/project
