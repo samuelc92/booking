@@ -1,13 +1,14 @@
 package io.github.samuelc92.booking
 
 import doobie.Transactor
+import java.net.InetAddress
 import zio.*
 import zhttp.service.Server
 
+import io.github.samuelc92.booking.config.AppConfig
 import io.github.samuelc92.booking.routes.EmployeeRoutes
-import io.github.samuelc92.booking.repositories.EmployeeRepository
+import io.github.samuelc92.booking.repositories.EmployeeRepositoryAlgebra
 import io.github.samuelc92.booking.usecases.CreateEmployeeUseCase
-import java.net.InetAddress
 
 
 object Main extends ZIOAppDefault:
@@ -20,9 +21,10 @@ object Main extends ZIOAppDefault:
       _       <- ZIO.never
     } yield ()
   }.provide(
+      AppConfig.layer,
       HttpServerSettings.default,
       EmployeeRoutes.layer,
-      EmployeeRepository.layer,
+      EmployeeRepositoryAlgebra.layer,
       CreateEmployeeUseCase.layer,
       ZLayer.Debug.tree
   )

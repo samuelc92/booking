@@ -1,25 +1,59 @@
-package io.github.samuelc92.booking.config
+package io.github.samuelc92.booking
 
-/*
-import cats.effect.IO
 import com.typesafe.config.ConfigFactory
 
-sealed trait Config {
-  protected val config = ConfigFactory.load()
-  protected val applicationConfig = config.getConfig("application")
-}
+import zio.*
+import zio.config.*
+import zio.config.magnolia.*
+import zio.config.syntax.*
+import zio.config.typesafe.TypesafeConfigSource.fromTypesafeConfig
+import zio.prelude.*
 
-object ServerConfig extends Config {
-  val serverConfig = this
-  private val server = config.getConfig("server")
-  val host = server.getString("host")
-  val port = server.getInt("port")
-}
+package object config {
+  
+  type ConfigEnv = DatabaseConfig
 
-object DbConfig extends Config {
-  val dbConfig = this
-  private val db = config.getConfig("db")
-  val username = db.getString("username")
-  val password = db.getString("password")
-}// (url: String, username: String, password: String)
-*/
+  final case class AppConfig(
+    database: DatabaseConfig
+  )
+
+  object AppConfig {
+    private lazy val appConfigLayer: ZLayer[Any, Nothing, AppConfig] = ZLayer {
+      val getTypesafeConfig = ZIO.attempt(ConfigFactory.load.resolve)
+      val getConfig         = read(descriptor[AppConfig].from(fromTypesafeConfig(getTypesafeConfig))) 
+      getConfig.orDie
+    }
+
+    var layer: ZLayer[Any, Nothing, ConfigEnv] = ZLayer.make[ConfigEnv](
+      appConfigLayer,
+      appConfigLayer.narrow(_.database)
+    )
+  }
+
+  case class DatabaseConfig(
+    driver: DbDriver,
+    password: DbPassword,
+    url: DbUrl,
+    user: DbUser 
+  )
+
+  type DbDriver = DbDriver.Type
+  object DbDriver extends Subtype[String] {
+    implicit lazy val d: Descriptor[DbDriver] = derive(implicitly[Descriptor[String]])
+  }
+
+  type DbPassword = DbPassword.Type
+  object DbPassword extends Subtype[String] {
+    implicit lazy val d: Descriptor[DbPassword] = derive(implicitly[Descriptor[String]])
+  }
+
+  type DbUrl = DbUrl.Type
+  object DbUrl extends Subtype[String] {
+    implicit lazy val d: Descriptor[DbUrl] = derive(implicitly[Descriptor[String]])
+  }
+
+  type DbUser = DbUser.Type
+  object DbUser extends Subtype[String] {
+    implicit lazy val d: Descriptor[DbUser] = derive(implicitly[Descriptor[String]])
+  }
+}
