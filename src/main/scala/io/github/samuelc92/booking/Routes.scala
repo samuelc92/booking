@@ -3,7 +3,7 @@ package io.github.samuelc92.booking
 import zhttp.http._
 import zio._
 import java.io.{IOException}
-import io.github.samuelc92.booking.repositories.{BookingRepository, EmployeeRepository, EmployeeScheduleRepository}
+import io.github.samuelc92.booking.repositories.{BookingRepository, EmployeeScheduleRepository}
 import io.github.samuelc92.booking.routes.EmployeeRoutes
 
 object Routes:

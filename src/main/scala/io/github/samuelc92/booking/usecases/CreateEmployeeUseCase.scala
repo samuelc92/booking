@@ -18,7 +18,7 @@ final case class CreateEmployeeRequest(fullName: String, scheduler: Seq[CreateEm
 final case class CreateEmployeeScheduleRequest(day: String, startTime1: String, endTime1: String, startTime2: String, endTime2: String)
 
 trait CreateEmployeeUseCase:
-  def execute(request: Employee): ZIO[Any, Nothing, Employee]
+  def execute(request: Employee): ZIO[Any, Nothing, Unit]
 
 object CreateEmployeeUseCase {
   lazy val layer: ZLayer[EmployeeRepositoryAlgebra, Throwable, CreateEmployeeUseCase] = ZLayer {
@@ -30,15 +30,14 @@ object CreateEmployeeUseCase {
   final case class CreateEmployeeUseCaseImpl(
     employeeRepository: EmployeeRepositoryAlgebra
   ) extends CreateEmployeeUseCase {
-    override def execute(request: Employee): ZIO[Any, Nothing, Employee] =
+
+    override def execute(request: Employee): ZIO[Any, Nothing, Unit] =
       for {
         _ <- employeeRepository
           .create(request)
-          .tap(inserted => ZIO.logInfo(s"Created employee: $inserted"))
-          .catchAll { e =>
-            ZIO.logError(s"Got the error: $e. Ignoring...").`as`("")
-          }
-      } yield request
+          .tapError(e => ZIO.logError(s"Error on inserting an employee. Error: $e"))
+          .orDie
+      } yield () 
   } 
 
   sealed trait Error

@@ -32,14 +32,13 @@ final case class EmployeeRoutesImpl(useCase: CreateEmployeeUseCase) extends Empl
 
   private val baseEndpoint = endpoint.in("api").in("v1").in("employees")
 
-  private val exampleEmployee = Employee("Test")
+  private val exampleEmployee = Employee(1, "Test")
   private val employeeBody = jsonBody[Employee].example(exampleEmployee)
   private val employeeOutBody = jsonBody[Employee].example(exampleEmployee)
 
   private val postEmployeeEndpoint =
     baseEndpoint.post
       .in(employeeBody)
-      .out(employeeOutBody)
 
   private val postEmployeeRoute =
     postEmployeeEndpoint.zServerLogic { case employee =>

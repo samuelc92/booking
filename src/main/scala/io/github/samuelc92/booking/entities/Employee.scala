@@ -4,7 +4,7 @@ import java.util.UUID
 import zio.json.{DeriveJsonCodec, JsonCodec}
 import sttp.tapir.Schema
 
-case class Employee(name: String)
+case class Employee(id: Int, name: String)
 
 object Employee:
   implicit val jsonCodec: JsonCodec[Employee] = DeriveJsonCodec.gen
