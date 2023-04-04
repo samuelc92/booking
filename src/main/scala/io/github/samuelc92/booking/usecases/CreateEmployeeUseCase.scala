@@ -5,8 +5,6 @@ import io.github.samuelc92.booking.valueobjects.Period
 import io.github.samuelc92.booking.entities.*
 import io.github.samuelc92.booking.usecases.CreateEmployeeUseCase.CreateEmployeeUseCaseImpl.*
 
-import cats.effect.IO
-import java.util.UUID
 import scala.annotation.tailrec
 
 import zio.*
@@ -39,24 +37,6 @@ object CreateEmployeeUseCase {
           .orDie
       } yield () 
   } 
-
-  sealed trait Error
-  object Error {
-
-    implicit lazy val codec: JsonCodec[Error] = DeriveJsonCodec.gen
-
-    case class InvalidInput(error: String) extends Error
-    object InvalidInput {
-      implicit lazy val codec: JsonCodec[InvalidInput] = DeriveJsonCodec.gen
-      implicit lazy val schema: Schema[InvalidInput]   = Schema.derived
-    }
-
-    case class NotFound(message: String) extends Error
-    object NotFound {
-      implicit lazy val codec: JsonCodec[NotFound] = DeriveJsonCodec.gen
-      implicit lazy val schema: Schema[NotFound]   = Schema.derived
-    }
-  }
 }
 /*
 object CreateEmployeeUseCase:

@@ -16,12 +16,10 @@ import doobie.implicits.legacy.instant.*
 import doobie.util.ExecutionContexts
 import doobie.util.transactor
 
-case class EmployeeTable(id: Int, name: String)
-
 trait EmployeeRepositoryAlgebra {
   def create(employee: Employee): ZIO[Any, Throwable, Unit]
 
-  // def findById(id: Int): ZIO[Any, Nothing, Option[Employee]]
+  def findById(id: Int): ZIO[Any, Throwable, Option[Employee]]
 
   // def findAll: ZIO[Any, Nothing, List[Employee]]
 }
@@ -30,10 +28,10 @@ object EmployeeRepositoryAlgebra {
   def create(employee: Employee): ZIO[EmployeeRepositoryAlgebra, Throwable, Unit] =
     ZIO.serviceWithZIO[EmployeeRepositoryAlgebra](_.create(employee))
 
-  /*
-  def findById(id: Int): ZIO[EmployeeRepositoryAlgebra, Nothing, Option[Employee]] =
+  def findById(id: Int): ZIO[EmployeeRepositoryAlgebra, Throwable, Option[Employee]] =
     ZIO.serviceWithZIO[EmployeeRepositoryAlgebra](_.findById(id))
 
+  /*
   def findAll(id: String): ZIO[EmployeeRepositoryAlgebra, Nothing, List[Employee]] =
     ZIO.serviceWithZIO[EmployeeRepositoryAlgebra](_.findAll)
   */
@@ -67,16 +65,13 @@ object EmployeeRepositoryAlgebra {
       transaction.transact(transactor)
     }
 
-    /*
-    override def findById(id: Int): ZIO[Any, SQLException, Option[Employee]] =
-      ctx.run {
-        quote {
-          query[EmployeeTable]
-            .filter(p => p.id == lift(id))
-            .map(e => Employee(e.name))
-        }
-      }.provide(ZLayer.succeed(ds)).map(_.headOption)
+    override def findById(id: Int): ZIO[Any, Throwable, Option[Employee]] =
+      SQL
+        .getById(id)
+        .option
+        .transact(transactor)
 
+/*
     override def findAll: ZIO[Any, SQLException, List[Employee]] =
       ctx.run {
         quote {
@@ -94,6 +89,16 @@ object EmployeeRepositoryAlgebra {
               (name)
             VALUES (${employee.name})
       """.update
+
+    def getById(id: Int): Query0[Employee] =
+      sql"""SELECT id, name
+            FROM employee
+            WHERE id = ${id}
+        """   
+        .query[(Int, String)]
+        .map {
+          case (id, name) => Employee(id, name)
+        }
   }
 
   def loadAndMigrateFlyway(config: DatabaseConfig): Task[Unit] =

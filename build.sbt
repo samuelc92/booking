@@ -27,8 +27,6 @@ lazy val root = (project in file("."))
       "dev.zio"                     %% "zio-json"                 % "0.3.0-RC10",
       "dev.zio"                     %% "zio-prelude"              % "1.0.0-RC15",
 
-      "io.getquill"                 %% "quill-zio"                % quillVersion,
-      "io.getquill"                 %% "quill-jdbc-zio"           % quillVersion,
       "com.h2database"              % "h2"                        % "2.1.214",
       "org.tpolecat"                %% "doobie-core"              % DoobieVersion,
       "org.tpolecat"                %% "doobie-postgres"          % DoobieVersion,

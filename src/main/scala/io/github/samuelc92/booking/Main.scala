@@ -8,7 +8,7 @@ import zhttp.service.Server
 import io.github.samuelc92.booking.config.AppConfig
 import io.github.samuelc92.booking.routes.EmployeeRoutes
 import io.github.samuelc92.booking.repositories.EmployeeRepositoryAlgebra
-import io.github.samuelc92.booking.usecases.CreateEmployeeUseCase
+import io.github.samuelc92.booking.usecases.*
 
 
 object Main extends ZIOAppDefault:
@@ -26,5 +26,6 @@ object Main extends ZIOAppDefault:
       EmployeeRoutes.layer,
       EmployeeRepositoryAlgebra.layer,
       CreateEmployeeUseCase.layer,
+      GetEmployeeUseCase.layer,
       ZLayer.Debug.tree
   )
