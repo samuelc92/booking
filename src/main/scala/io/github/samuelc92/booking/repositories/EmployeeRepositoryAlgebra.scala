@@ -17,11 +17,11 @@ import doobie.util.ExecutionContexts
 import doobie.util.transactor
 
 trait EmployeeRepositoryAlgebra {
-  def create(employee: Employee): ZIO[Any, Throwable, Unit]
+  def create(employee: Employee): Task[Unit]
 
-  def findById(id: Int): ZIO[Any, Throwable, Option[Employee]]
+  def findById(id: Int): Task[Option[Employee]]
 
-  def findAll: ZIO[Any, Throwable, List[Employee]]
+  def findAll: Task[List[Employee]]
 }
 
 object EmployeeRepositoryAlgebra {
@@ -54,7 +54,7 @@ object EmployeeRepositoryAlgebra {
 
   case class EmployeeRepository(transactor: HikariTransactor[Task]) extends EmployeeRepositoryAlgebra {
 
-    override def create(employee: Employee): ZIO[Any, Throwable, Unit] = {
+    override def create(employee: Employee): Task[Unit] = {
 
       val transaction = for {
         _ <- SQL.insertEmployee(employee).run
@@ -63,13 +63,13 @@ object EmployeeRepositoryAlgebra {
       transaction.transact(transactor)
     }
 
-    override def findById(id: Int): ZIO[Any, Throwable, Option[Employee]] =
+    override def findById(id: Int): Task[Option[Employee]] =
       SQL
         .getById(id)
         .option
         .transact(transactor)
 
-    override def findAll: ZIO[Any, Throwable, List[Employee]] =
+    override def findAll: Task[List[Employee]] =
       SQL
         .getAll
         .to[List]
