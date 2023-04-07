@@ -1,6 +1,7 @@
 package io.github.samuelc92.booking.routes
 
 import io.github.samuelc92.booking.entities.*
+import io.github.samuelc92.booking.dtos.*
 import io.github.samuelc92.booking.usecases.*
 import io.github.samuelc92.booking.Error
 
@@ -39,9 +40,12 @@ final case class EmployeeRoutesImpl(
 
   private val baseEndpoint = endpoint.in("api").in("v1").in("employees")
 
-  private val exampleEmployee = Employee(1, "Test")
-  private val employeeBody = jsonBody[Employee].example(exampleEmployee)
-  private val employeeOutBody = jsonBody[Employee].example(exampleEmployee)
+  private val exampleEmployee = CreateEmployeeRequest("Test")
+  private val employeeBody = jsonBody[CreateEmployeeRequest].example(exampleEmployee)
+  private val employeeOutBody = jsonBody[CreateEmployeeRequest].example(exampleEmployee)
+
+  private val exampleGetEmployee = GetEmployeeResponse(0, "Test")
+  private val getEmployeeOutBody = jsonBody[GetEmployeeResponse].example(exampleGetEmployee)
 
   private val getEmployeeErrorOut = oneOf[Error](
     oneOfVariant(StatusCode.NotFound, jsonBody[Error.NotFound].description("Employee was not found."))
@@ -54,7 +58,7 @@ final case class EmployeeRoutesImpl(
   private val getEmployeeEndpoint =
     baseEndpoint.get
       .in(path[Int]("id"))
-      .out(employeeBody)
+      .out(getEmployeeOutBody)
       .errorOut(getEmployeeErrorOut)
 
   private val postEmployeeRoute =

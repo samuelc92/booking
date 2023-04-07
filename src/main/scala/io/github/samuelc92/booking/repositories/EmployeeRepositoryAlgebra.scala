@@ -87,7 +87,7 @@ object EmployeeRepositoryAlgebra {
     def insertEmployee(employee: Employee): Update0 =
       sql"""INSERT INTO employee
               (name)
-            VALUES (${employee.name})
+            VALUES (${employee.name.toString()})
       """.update
 
     def getById(id: Int): Query0[Employee] =
@@ -97,7 +97,7 @@ object EmployeeRepositoryAlgebra {
         """   
         .query[(Int, String)]
         .map {
-          case (id, name) => Employee(id, name)
+          case (id, name) => Employee(id, Name(name))
         }
   }
 

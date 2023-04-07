@@ -3,6 +3,7 @@ package io.github.samuelc92.booking.usecases
 import io.github.samuelc92.booking.repositories.{EmployeeRepositoryAlgebra, EmployeeSchedule, EmployeeScheduleRepositoryAlgebra}
 import io.github.samuelc92.booking.valueobjects.Period
 import io.github.samuelc92.booking.entities.*
+import io.github.samuelc92.booking.dtos.*
 import io.github.samuelc92.booking.usecases.CreateEmployeeUseCase.CreateEmployeeUseCaseImpl.*
 
 import scala.annotation.tailrec
@@ -12,11 +13,11 @@ import zio.*
 import zio.json.*
 import sttp.tapir.Schema
 
-final case class CreateEmployeeRequest(fullName: String, scheduler: Seq[CreateEmployeeScheduleRequest])
-final case class CreateEmployeeScheduleRequest(day: String, startTime1: String, endTime1: String, startTime2: String, endTime2: String)
+//final case class CreateEmployeeRequest(fullName: String, scheduler: Seq[CreateEmployeeScheduleRequest])
+//final case class CreateEmployeeScheduleRequest(day: String, startTime1: String, endTime1: String, startTime2: String, endTime2: String)
 
 trait CreateEmployeeUseCase:
-  def execute(request: Employee): ZIO[Any, Nothing, Unit]
+  def execute(request: CreateEmployeeRequest): ZIO[Any, Nothing, Unit]
 
 object CreateEmployeeUseCase {
   lazy val layer: ZLayer[EmployeeRepositoryAlgebra, Throwable, CreateEmployeeUseCase] = ZLayer {
@@ -29,10 +30,10 @@ object CreateEmployeeUseCase {
     employeeRepository: EmployeeRepositoryAlgebra
   ) extends CreateEmployeeUseCase {
 
-    override def execute(request: Employee): ZIO[Any, Nothing, Unit] =
+    override def execute(request: CreateEmployeeRequest): ZIO[Any, Nothing, Unit] =
       for {
         _ <- employeeRepository
-          .create(request)
+          .create(Employee(0, Name(request.name)))
           .tapError(e => ZIO.logError(s"Error on inserting an employee. Error: $e"))
           .orDie
       } yield () 
