@@ -47,6 +47,9 @@ final case class EmployeeRoutesImpl(
   private val exampleGetEmployee = GetEmployeeResponse(0, "Test")
   private val getEmployeeOutBody = jsonBody[GetEmployeeResponse].example(exampleGetEmployee)
 
+  private val exampleGetAll = List(GetEmployeeResponse(0, "Test"))
+  private val getAllOutBody = jsonBody[List[GetEmployeeResponse]].example(exampleGetAll)
+
   private val getEmployeeErrorOut = oneOf[Error](
     oneOfVariant(StatusCode.NotFound, jsonBody[Error.NotFound].description("Employee was not found."))
   )
@@ -61,6 +64,10 @@ final case class EmployeeRoutesImpl(
       .out(getEmployeeOutBody)
       .errorOut(getEmployeeErrorOut)
 
+  private val getAllEndpoint =
+    baseEndpoint.get
+      .out(getAllOutBody)
+
   private val postEmployeeRoute =
     postEmployeeEndpoint.zServerLogic { case employee =>
       useCase.execute(employee)
@@ -69,12 +76,14 @@ final case class EmployeeRoutesImpl(
   private val allRoutes: Http[Any, Throwable, Request, Response] =
     ZioHttpInterpreter().toHttp(List(
       postEmployeeEndpoint.zServerLogic(request => useCase.execute(request)),
-      getEmployeeEndpoint.zServerLogic(id => getUseCase.getById(id))))
+      getEmployeeEndpoint.zServerLogic(id => getUseCase.getById(id)),
+      getAllEndpoint.zServerLogic(_ => getUseCase.getAll)))
 
   private val endpoints = {
     val endpoints = List(
       postEmployeeEndpoint,
-      getEmployeeEndpoint
+      getEmployeeEndpoint,
+      getAllEndpoint
     )
     endpoints.map(_.tags(List("Employee endpoints")))
   }

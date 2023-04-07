@@ -21,7 +21,7 @@ trait EmployeeRepositoryAlgebra {
 
   def findById(id: Int): ZIO[Any, Throwable, Option[Employee]]
 
-  // def findAll: ZIO[Any, Nothing, List[Employee]]
+  def findAll: ZIO[Any, Throwable, List[Employee]]
 }
 
 object EmployeeRepositoryAlgebra {
@@ -31,10 +31,8 @@ object EmployeeRepositoryAlgebra {
   def findById(id: Int): ZIO[EmployeeRepositoryAlgebra, Throwable, Option[Employee]] =
     ZIO.serviceWithZIO[EmployeeRepositoryAlgebra](_.findById(id))
 
-  /*
-  def findAll(id: String): ZIO[EmployeeRepositoryAlgebra, Nothing, List[Employee]] =
+  def findAll(id: String): ZIO[EmployeeRepositoryAlgebra, Throwable, List[Employee]] =
     ZIO.serviceWithZIO[EmployeeRepositoryAlgebra](_.findAll)
-  */
 
   lazy val layer: ZLayer[DatabaseConfig, Throwable, EmployeeRepositoryAlgebra] = ZLayer.scoped {
     for {
@@ -71,15 +69,11 @@ object EmployeeRepositoryAlgebra {
         .option
         .transact(transactor)
 
-/*
-    override def findAll: ZIO[Any, SQLException, List[Employee]] =
-      ctx.run {
-        quote {
-          query[EmployeeTable]
-            .map(e => Employee(e.name))
-        }
-      }.provide(ZLayer.succeed(ds))
-    */
+    override def findAll: ZIO[Any, Throwable, List[Employee]] =
+      SQL
+        .getAll
+        .to[List]
+        .transact(transactor)
   }
 
   object SQL {
@@ -99,6 +93,15 @@ object EmployeeRepositoryAlgebra {
         .map {
           case (id, name) => Employee(id, Name(name))
         }
+    
+    def getAll: Query0[Employee] =
+      sql"""SELECT *
+            FROM employee
+      """
+      .query[(Int, String)]
+      .map {
+        case (id, name) => Employee(id, Name(name))
+      }
   }
 
   def loadAndMigrateFlyway(config: DatabaseConfig): Task[Unit] =

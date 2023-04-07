@@ -9,6 +9,7 @@ import zio.*
 
 trait GetEmployeeUseCase:
   def getById(id: Int): ZIO[Any, Error.NotFound, GetEmployeeResponse]
+  def getAll: ZIO[Any, Nothing, List[GetEmployeeResponse]]
 
 object GetEmployeeUseCase:
   lazy val layer: ZLayer[EmployeeRepositoryAlgebra, Nothing, GetEmployeeUseCase] = ZLayer {
@@ -29,3 +30,11 @@ object GetEmployeeUseCase:
                       .mapError(_ => Error.NotFound(s"Employee with id $id not found."))
                       .someOrFail(Error.NotFound(s"Employee with id $id not found."))
       } yield GetEmployeeResponse(employee.id, employee.name.toString)
+    
+    override def getAll: ZIO[Any, Nothing, List[GetEmployeeResponse]] =
+      for {
+        employees <- repository
+                      .findAll
+                      .tapError(e => ZIO.logError("Error getting all employees"))
+                      .orDie
+      } yield employees.map(emp => GetEmployeeResponse(emp.id, emp.name.toString))
