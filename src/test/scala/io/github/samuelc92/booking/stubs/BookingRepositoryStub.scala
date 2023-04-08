@@ -1,8 +1,8 @@
-package io.github.samuelc92.booking.stubs
+package booking.stubs
 
 import cats.effect.IO
-import io.github.samuelc92.booking.repositories.{BookingMapped, BookingRepositoryAlgebra}
-import io.github.samuelc92.booking.stubs.BookingRepositoryStub.buildBookingMapped
+import booking.repositories.{BookingMapped, BookingRepositoryAlgebra}
+import booking.stubs.BookingRepositoryStub.buildBookingMapped
 
 import java.time.{OffsetDateTime, ZoneOffset}
 import java.util.UUID

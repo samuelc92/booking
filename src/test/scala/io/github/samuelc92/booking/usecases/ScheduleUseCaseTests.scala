@@ -1,6 +1,6 @@
-package io.github.samuelc92.booking.usecases
+package booking.usecases
 
-import io.github.samuelc92.booking.stubs.{BookingRepositoryStub, EmployeeScheduleRepositoryStub}
+import booking.stubs.{BookingRepositoryStub, EmployeeScheduleRepositoryStub}
 import munit.CatsEffectSuite
 
 import java.time.LocalDate

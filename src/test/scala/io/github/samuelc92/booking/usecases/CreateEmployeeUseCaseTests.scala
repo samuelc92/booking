@@ -1,11 +1,11 @@
-package io.github.samuelc92.booking.usecases
+package booking.usecases
 
-import io.github.samuelc92.booking.stubs.{EmployeeScheduleRepositoryStub}
+import booking.stubs.{EmployeeScheduleRepositoryStub}
 import munit.CatsEffectSuite
 
   /*
 class CreateEmployeeUseCaseTests extends CatsEffectSuite:
-  import io.github.samuelc92.booking.usecases.CreateEmployeeUseCaseTests.*
+  import booking.usecases.CreateEmployeeUseCaseTests.*
 
   private val useCase = CreateEmployeeUseCase(EmployeeRepositoryStub.apply(), EmployeeScheduleRepositoryStub.apply())
 

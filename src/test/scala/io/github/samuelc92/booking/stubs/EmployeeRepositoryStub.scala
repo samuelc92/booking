@@ -1,8 +1,8 @@
-package io.github.samuelc92.booking.stubs
+package booking.stubs
 
 import cats.effect.IO
-import io.github.samuelc92.booking.repositories.*
-import io.github.samuelc92.booking.entities.*
+import booking.repositories.*
+import booking.entities.*
 
 /*
 class EmployeeRepositoryStub extends EmployeeRepositoryAlgebra:

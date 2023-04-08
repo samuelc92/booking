@@ -1,8 +1,8 @@
-package io.github.samuelc92.booking.stubs
+package booking.stubs
 
 import cats.effect.IO
-import io.github.samuelc92.booking.repositories.{EmployeeSchedule, EmployeeScheduleRepositoryAlgebra}
-import io.github.samuelc92.booking.stubs.EmployeeScheduleRepositoryStub.employeeSchedules
+import booking.repositories.{EmployeeSchedule, EmployeeScheduleRepositoryAlgebra}
+import booking.stubs.EmployeeScheduleRepositoryStub.employeeSchedules
 
 class EmployeeScheduleRepositoryStub extends EmployeeScheduleRepositoryAlgebra:
   override def findByEmployeeId(employeeId: Int): IO[List[EmployeeSchedule]] = ???
