@@ -1,7 +1,7 @@
-package io.github.samuelc92.booking.repositories
+package booking.repositories
 
-import io.github.samuelc92.booking.config.DatabaseConfig
-import io.github.samuelc92.booking.entities.*
+import booking.config.DatabaseConfig
+import booking.entities.*
 
 import org.flywaydb.core.Flyway
 
@@ -91,7 +91,7 @@ object EmployeeRepositoryAlgebra {
         """   
         .query[(Int, String)]
         .map {
-          case (id, name) => Employee(id, Name(name))
+          case (id, name) => Employee(id, Name(name), Seq())
         }
     
     def getAll: Query0[Employee] =
@@ -100,7 +100,7 @@ object EmployeeRepositoryAlgebra {
       """
       .query[(Int, String)]
       .map {
-        case (id, name) => Employee(id, Name(name))
+        case (id, name) => Employee(id, Name(name), Seq())
       }
   }
 

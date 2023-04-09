@@ -1,9 +1,9 @@
-package io.github.samuelc92.booking
+package booking
 
 import zhttp.http._
 import zio._
-import io.github.samuelc92.booking.repositories.{BookingRepositoryAlgebra, EmployeeScheduleRepositoryAlgebra}
-import io.github.samuelc92.booking.usecases.ScheduleUseCase
+import booking.repositories.{BookingRepositoryAlgebra, EmployeeScheduleRepositoryAlgebra}
+import booking.usecases.ScheduleUseCase
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

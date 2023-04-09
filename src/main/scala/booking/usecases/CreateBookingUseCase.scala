@@ -1,11 +1,11 @@
-package io.github.samuelc92.booking.usecases
+package booking.usecases
 
 import cats.effect.IO
 
 import java.time.OffsetDateTime
 import java.util.UUID
-import io.github.samuelc92.booking.entities.Booking
-import io.github.samuelc92.booking.repositories.{BookingMapped, BookingRepositoryAlgebra}
+import booking.entities.Booking
+import booking.repositories.{BookingMapped, BookingRepositoryAlgebra}
 
 trait BusinessError
 case class NoSlotError(message: String) extends BusinessError

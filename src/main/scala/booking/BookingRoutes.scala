@@ -1,9 +1,9 @@
-package io.github.samuelc92.booking
+package booking
 
-import io.github.samuelc92.booking.usecases.*
-import io.github.samuelc92.booking.entities.*
-import io.github.samuelc92.booking.entities.Booking.given
-import io.github.samuelc92.booking.repositories.BookingRepositoryAlgebra
+import booking.usecases.*
+import booking.entities.*
+import booking.entities.Booking.given
+import booking.repositories.BookingRepositoryAlgebra
 import zhttp.http._
 import zio._
 

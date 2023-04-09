@@ -1,9 +1,9 @@
-package io.github.samuelc92.booking.usecases
+package booking.usecases
 
-import io.github.samuelc92.booking.entities.Employee
-import io.github.samuelc92.booking.repositories.EmployeeRepositoryAlgebra
-import io.github.samuelc92.booking.Error
-import io.github.samuelc92.booking.dtos.*
+import booking.entities.Employee
+import booking.repositories.EmployeeRepositoryAlgebra
+import booking.Error
+import booking.dtos.*
 
 import zio.*
 

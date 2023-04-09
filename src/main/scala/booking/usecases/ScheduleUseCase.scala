@@ -1,10 +1,10 @@
-package io.github.samuelc92.booking.usecases
+package booking.usecases
 
 import java.time.{LocalDate, OffsetDateTime, OffsetTime, ZoneOffset}
-import io.github.samuelc92.booking.*
+import booking.*
 import cats.effect.IO
-import io.github.samuelc92.booking.repositories.{BookingMapped, BookingRepositoryAlgebra, EmployeeSchedule, EmployeeScheduleRepositoryAlgebra}
-import io.github.samuelc92.booking.valueobjects.Period
+import booking.repositories.{BookingMapped, BookingRepositoryAlgebra, EmployeeSchedule, EmployeeScheduleRepositoryAlgebra}
+import booking.valueobjects.Period
 
 import scala.annotation.tailrec
 

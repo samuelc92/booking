@@ -1,9 +1,9 @@
-package io.github.samuelc92.booking.routes
+package booking.routes
 
-import io.github.samuelc92.booking.entities.*
-import io.github.samuelc92.booking.dtos.*
-import io.github.samuelc92.booking.usecases.*
-import io.github.samuelc92.booking.Error
+import booking.entities.*
+import booking.dtos.*
+import booking.usecases.*
+import booking.Error
 
 import zio.*
 
@@ -16,6 +16,7 @@ import sttp.tapir.swagger.SwaggerUI
 import sttp.tapir.ztapir.*
 import zhttp.http.{Http, HttpApp, Request, Response}
 import zhttp.http.Status.NoContent
+import java.time.LocalTime
 
 trait EmployeeRoutes:
   def httApp: ZIO[Any, Nothing, HttpApp[Any, Throwable]]
@@ -40,7 +41,10 @@ final case class EmployeeRoutesImpl(
 
   private val baseEndpoint = endpoint.in("api").in("v1").in("employees")
 
-  private val exampleEmployee = CreateEmployeeRequest("Test")
+  private val exampleEmployeeScheduler = Seq(
+    CreateEmployeeScheduleRequest("MONDAY", LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now())
+  )
+  private val exampleEmployee = CreateEmployeeRequest("Test", exampleEmployeeScheduler)
   private val employeeBody = jsonBody[CreateEmployeeRequest].example(exampleEmployee)
   private val employeeOutBody = jsonBody[CreateEmployeeRequest].example(exampleEmployee)
 

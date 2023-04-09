@@ -1,4 +1,4 @@
-package io.github.samuelc92.booking.repositories
+package booking.repositories
 
 import cats.effect.IO
 import cats.implicits.*

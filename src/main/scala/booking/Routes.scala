@@ -1,10 +1,10 @@
-package io.github.samuelc92.booking
+package booking
 
 import zhttp.http._
 import zio._
 import java.io.{IOException}
-import io.github.samuelc92.booking.repositories.{BookingRepository, EmployeeScheduleRepository}
-import io.github.samuelc92.booking.routes.EmployeeRoutes
+import booking.repositories.{BookingRepository, EmployeeScheduleRepository}
+import booking.routes.EmployeeRoutes
 
 object Routes:
 

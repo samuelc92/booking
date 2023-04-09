@@ -1,14 +1,14 @@
-package io.github.samuelc92.booking
+package booking
 
 import doobie.Transactor
 import java.net.InetAddress
 import zio.*
 import zhttp.service.Server
 
-import io.github.samuelc92.booking.config.AppConfig
-import io.github.samuelc92.booking.routes.EmployeeRoutes
-import io.github.samuelc92.booking.repositories.EmployeeRepositoryAlgebra
-import io.github.samuelc92.booking.usecases.*
+import booking.config.AppConfig
+import booking.routes.EmployeeRoutes
+import booking.repositories.EmployeeRepositoryAlgebra
+import booking.usecases.*
 
 
 object Main extends ZIOAppDefault:

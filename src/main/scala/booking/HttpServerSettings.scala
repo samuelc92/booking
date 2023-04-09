@@ -1,4 +1,4 @@
-package io.github.samuelc92.booking
+package booking
 
 import zio.*
 

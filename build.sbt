@@ -13,7 +13,7 @@ val ZIOConfigVersion       = "3.0.1"
 
 lazy val root = (project in file("."))
   .settings(
-    organization := "io.github.samuelc92",
+    //organization := "io.github.samuelc92",
     name := "booking",
     version := "0.0.1-SNAPSHOT",
     scalaVersion := "3.2.2",

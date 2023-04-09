@@ -1,4 +1,4 @@
-package io.github.samuelc92.booking.config
+package booking.config
 
 import cats.effect.IO
 import doobie.Transactor

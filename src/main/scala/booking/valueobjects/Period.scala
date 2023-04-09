@@ -1,4 +1,4 @@
-package io.github.samuelc92.booking.valueobjects
+package booking.valueobjects
 
 import java.time.{OffsetTime, ZoneOffset}
 
